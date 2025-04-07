@@ -105,14 +105,15 @@
     
     // Function to update button colors
     function updateButtonColors() {
-      const activeCompany = window.location.pathname.split('/')[1] || 'computers';
+      const activeCompany = window.location.pathname.split('/')[1] || 'catcompanies';
       const companyColors = {
+        catcompanies: { primary: '#333333', hover: '#000000' },
         computers: { primary: '#80C2A4', hover: '#6ba589' },
         campaigns: { primary: '#C2809D', hover: '#a36b84' },
         phish: { primary: '#BEC280', hover: '#a1a46c' },
         compute: { primary: '#8380C2', hover: '#6d6aa3' }
       };
-      const colors = companyColors[activeCompany] || companyColors.computers;
+      const colors = companyColors[activeCompany] || companyColors.catcompanies;
       
       const chatButton = speechBubbleEl.querySelector('.chat-button');
       if (chatButton) {

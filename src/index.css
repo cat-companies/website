@@ -23,10 +23,13 @@
   overflow: hidden;
   position: relative;
   width: 100%;
+  padding: 0.75rem 0;
 }
 
 .partners-scroll {
   display: flex;
-  animation: scroll 30s linear infinite;
+  animation: scroll 40s linear infinite;
   will-change: transform;
+  min-width: 100%;
+  padding: 0 1rem;
 } 
