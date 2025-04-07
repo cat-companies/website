@@ -102,11 +102,30 @@
     speechBubbleEl.style.display = "none";
     speechBubbleEl.style.transition = "opacity 0.3s ease";
     speechBubbleEl.style.cursor = "default";
+    
+    // Function to update button colors
+    function updateButtonColors() {
+      const activeCompany = window.location.pathname.split('/')[1] || 'computers';
+      const companyColors = {
+        computers: { primary: '#80C2A4', hover: '#6ba589' },
+        campaigns: { primary: '#C2809D', hover: '#a36b84' },
+        phish: { primary: '#BEC280', hover: '#a1a46c' },
+        compute: { primary: '#8380C2', hover: '#6d6aa3' }
+      };
+      const colors = companyColors[activeCompany] || companyColors.computers;
+      
+      const chatButton = speechBubbleEl.querySelector('.chat-button');
+      if (chatButton) {
+        chatButton.style.backgroundColor = colors.primary;
+        chatButton.onmouseover = () => chatButton.style.backgroundColor = colors.hover;
+        chatButton.onmouseout = () => chatButton.style.backgroundColor = colors.primary;
+      }
+    }
+
     speechBubbleEl.innerHTML = `
       <div style="margin-bottom: 8px;">Hi! Can we help? 😺</div>
-      <a href="/contact" style="
+      <a href="/contact" class="chat-button" style="
         display: inline-block;
-        background-color: #80C2A4;
         color: white;
         padding: 6px 12px;
         border-radius: 6px;
@@ -114,13 +133,19 @@
         font-weight: 500;
         transition: background-color 0.2s ease;
         cursor: pointer;
-      " onmouseover="this.style.backgroundColor='#6ba589'" 
-        onmouseout="this.style.backgroundColor='#80C2A4'">
+      ">
         Chat with us →
       </a>
     `;
     
     document.body.appendChild(speechBubbleEl);
+    updateButtonColors();
+
+    // Update colors when URL changes
+    const observer = new MutationObserver(() => {
+      updateButtonColors();
+    });
+    observer.observe(document.querySelector('body'), { childList: true, subtree: true });
   }
 
   function showSpeechBubble() {

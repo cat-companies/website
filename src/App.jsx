@@ -7,7 +7,89 @@ import PhishPage from './pages/PhishPage';
 import ComputePage from './pages/ComputePage';
 import ContactPage from './pages/ContactPage';
 import logo from './assets/logo.svg';
-import React from 'react';
+import React, { useEffect } from 'react';
+
+// TitleManager component for scrolling title text
+function TitleManager() {
+  const location = useLocation();
+
+  React.useEffect(() => {
+    let originalTitle = "Cat Companies";
+    let interval;
+    let scrollPosition = 0;
+    const messages = [
+      "😺 Hey! Over here! *waves paw* 👋",
+      "😼 Pssst... your cat needs you! 🐈‍⬛ ",
+      "😿 Your code is getting cold... 🥶"
+    ];
+    let currentMessageIndex = 0;
+    
+    // Update title based on current route
+    if (location.pathname === "/") {
+      document.title = "Cat Companies";
+    } else if (location.pathname === "/computers") {
+      document.title = "Cat Computers";
+    } else if (location.pathname === "/campaigns") {
+      document.title = "Cat Campaigns";
+    } else if (location.pathname === "/phish") {
+      document.title = "Cat Phish";
+    } else if (location.pathname === "/compute") {
+      document.title = "Cat Compute";
+    } else if (location.pathname === "/contact") {
+      document.title = "Contact Us - Cat Companies";
+    }
+
+    // Store the current title
+    originalTitle = document.title;
+
+    // Handle visibility change
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Clear any existing interval first
+        if (interval) {
+          clearInterval(interval);
+        }
+        
+        // Start the scrolling animation
+        interval = setInterval(() => {
+          // Create scrolling effect by rotating the text
+          const currentMessage = messages[currentMessageIndex];
+          const rotatedText = currentMessage.slice(scrollPosition) + currentMessage.slice(0, scrollPosition);
+          document.title = rotatedText;
+          
+          // Move to the next character position
+          scrollPosition = (scrollPosition + 1) % currentMessage.length;
+          
+          // Switch to next message when current one completes
+          if (scrollPosition === 0) {
+            currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+          }
+        }, 90); // 40% faster (reduced from 150ms to 90ms)
+      } else {
+        // Clear the interval when tab becomes visible again
+        if (interval) {
+          clearInterval(interval);
+          interval = null;
+        }
+        // Restore the original title
+        document.title = originalTitle;
+      }
+    };
+
+    // Add the event listener
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Cleanup function
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [location.pathname]);
+
+  return null;
+}
 
 function NavLink({ to, children, company, dropdownItems, description }) {
   const { setCompany, companyColors, activeCompany } = useCompany();
@@ -407,6 +489,7 @@ function AppContent() {
   
   return (
     <div className="min-h-screen flex flex-col">
+      <TitleManager />
       <nav 
         className="fixed w-full z-50 transition-colors duration-500 ease-in-out"
         style={{ 
